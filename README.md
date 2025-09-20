@@ -188,14 +188,76 @@ uvicorn main:app --reload
 ### 🐳 Docker Deployment
 
 1. Build the Docker image:
-```bash
+```powershell
 docker build -t blog-api .
 ```
 
-2. Run the container:
-```bash
+2. Run the container (PowerShell):
+```powershell
+# Basic run
 docker run -p 8000:8000 blog-api
+
+# With environment variables
+docker run -p 8000:8000 -e "DATABASE_URL=sqlite:///./mydb.db" -e "SECRET_KEY=your-secret-key" blog-api
+
+# With all configuration options (using PowerShell line continuation)
+docker run -p 8000:8000 `
+    -e "DATABASE_URL=sqlite:///./mydb.db" `
+    -e "SECRET_KEY=your-secret-key" `
+    -e "ALGORITHM=HS256" `
+    -e "ACCESS_TOKEN_EXPIRE_MINUTES=30" `
+    blog-api
 ```
+
+3. Using the PowerShell script template:
+```powershell
+# Copy the template
+Copy-Item run-docker.ps1.template run-docker.ps1
+
+# Edit run-docker.ps1 with your configuration
+# (Update DATABASE_URL, SECRET_KEY, etc.)
+
+# Run the script
+.\run-docker.ps1
+```
+
+The template provides a starting point for your Docker configuration. For security:
+1. Never commit the actual `run-docker.ps1` to version control
+2. Always use unique and secure values for SECRET_KEY
+3. Update DATABASE_URL according to your environment
+4. The template file is safe to share as it contains no sensitive data
+
+### 🛠️ Docker Management Commands
+
+```powershell
+# List running containers
+docker ps
+
+# Stop a container
+docker stop <container-id>
+
+# Remove a container
+docker rm <container-id>
+
+# View container logs
+docker logs <container-id>
+
+# Interactive shell in container
+docker exec -it <container-id> /bin/bash
+
+# Stop all running containers
+docker stop $(docker ps -q)
+
+# Remove all stopped containers
+docker container prune
+```
+
+### 🌐 Network Access
+
+- Local access: http://localhost:8000
+- Network access: http://<your-ip>:8000
+- API Documentation: http://localhost:8000/docs
+- Alternative Documentation: http://localhost:8000/redoc
 
 ## 🔧 API Usage
 
@@ -268,13 +330,60 @@ This will:
 3. Create a blog post
 4. Retrieve posts
 
-## 🔄 Environment Variables
+## 🔄 Environment Configuration
+
+### Environment Variables
 
 Required variables in `.env`:
 - `DATABASE_URL`: Database connection string
 - `SECRET_KEY`: JWT signing key
 - `ALGORITHM`: JWT algorithm (default: HS256)
 - `ACCESS_TOKEN_EXPIRE_MINUTES`: Token expiry
+
+### Database URLs
+
+```plaintext
+# SQLite (local development)
+DATABASE_URL=sqlite:///./mydb.db
+
+# PostgreSQL (production)
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+```
+
+### Configuration Methods
+
+1. Using `.env` file (local development):
+```plaintext
+DATABASE_URL=sqlite:///./mydb.db
+SECRET_KEY=your-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
+
+2. Using PowerShell environment variables:
+```powershell
+$env:DATABASE_URL = "sqlite:///./mydb.db"
+$env:SECRET_KEY = "your-secret-key"
+$env:ALGORITHM = "HS256"
+$env:ACCESS_TOKEN_EXPIRE_MINUTES = "30"
+```
+
+3. Using Docker environment variables:
+```powershell
+docker run -p 8000:8000 `
+    -e "DATABASE_URL=sqlite:///./mydb.db" `
+    -e "SECRET_KEY=your-secret-key" `
+    -e "ALGORITHM=HS256" `
+    -e "ACCESS_TOKEN_EXPIRE_MINUTES=30" `
+    blog-api
+```
+
+### Security Considerations
+
+- Never commit `.env` files to version control
+- Use strong, unique SECRET_KEY values in production
+- Use PostgreSQL in production for better scalability
+- Keep environment variables secure and separate for different environments (dev/staging/prod)
 
 ## 📦 Dependencies
 

@@ -1,0 +1,13 @@
+# Template for run-docker.ps1
+# Rename this file to run-docker.ps1 and update the values accordingly
+$env:DATABASE_URL = "sqlite:///./mydb.db"  # Update with your database URL
+$env:SECRET_KEY = "change-this-to-your-secure-key"  # Update with your secret key
+$env:ALGORITHM = "HS256"
+$env:ACCESS_TOKEN_EXPIRE_MINUTES = "30"
+
+docker run -p 8000:8000 `
+    -e "DATABASE_URL=$env:DATABASE_URL" `
+    -e "SECRET_KEY=$env:SECRET_KEY" `
+    -e "ALGORITHM=$env:ALGORITHM" `
+    -e "ACCESS_TOKEN_EXPIRE_MINUTES=$env:ACCESS_TOKEN_EXPIRE_MINUTES" `
+    blog-api
