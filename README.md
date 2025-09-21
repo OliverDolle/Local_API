@@ -38,7 +38,112 @@ A robust, feature-rich blog service built with FastAPI, offering a complete REST
     └── index.html    # Main interface
 ```
 
-## � Component Details
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.12 or higher
+- Docker (for containerized deployment)
+- Git (for version control)
+
+### Local Development Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/YourUsername/FastAPI-Blog-Service.git
+cd FastAPI-Blog-Service
+```
+
+2. Create a virtual environment (optional but recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use: .\venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Create the data directory for the database:
+```bash
+mkdir data
+```
+
+5. Run the application locally:
+```bash
+python main.py
+```
+
+### 🐳 Docker Setup
+
+1. Create the data directory for persistent storage:
+```powershell
+mkdir -p data
+```
+
+2. Build the Docker image:
+```powershell
+docker build -t blog-api .
+```
+
+3. Run the container with volume mount for persistent data:
+```powershell
+docker run -p 8000:8000 -v ${PWD}/data:/app/data blog-api
+```
+
+4. Test the API using the provided client:
+```powershell
+# In a new terminal
+python client.py
+```
+
+### 🔄 Database Management
+
+The application uses SQLite by default with the following configuration:
+- Database location: `./data/mydb.db`
+- Auto-migration: Tables are automatically created on startup
+- Persistent storage: Database file is stored in the mounted volume when using Docker
+
+To reset the database:
+1. Stop the running container/application
+2. Delete the database file:
+```powershell
+Remove-Item -Path .\data\mydb.db -ErrorAction SilentlyContinue
+```
+3. Restart the application/container
+
+### 💻 Using the Application
+
+1. Web Interface:
+   - Open http://localhost:8000 in your browser
+   - Posts are automatically loaded and refreshed every 5 seconds
+   - Use the interface to register, login, and create posts
+
+2. API Client:
+   - The `client.py` script demonstrates API usage
+   - Creates a user with unique credentials
+   - Posts are automatically created after successful login
+
+Example client usage:
+```python
+from client import BlogAPIClient
+
+client = BlogAPIClient("http://localhost:8000")
+client.register_user(
+    email="user@example.com",
+    username="testuser",
+    password="password123",
+    full_name="Test User"
+)
+client.login("testuser", "password123")
+client.create_post(
+    title="Hello World",
+    content="My first blog post!",
+    tags=["hello", "first-post"]
+)
+```
+
+## 📚 Component Details
 
 ### 1. `main.py`
 The core application file that:

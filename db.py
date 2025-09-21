@@ -11,8 +11,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./mydb.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/mydb.db")
 IS_SQLITE = DATABASE_URL.startswith("sqlite")
+
+# Ensure data directory exists
+if IS_SQLITE and not os.path.exists("data"):
+    os.makedirs("data", exist_ok=True)
 
 # Create engine with appropriate configuration
 engine = create_engine(

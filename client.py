@@ -85,12 +85,17 @@ def main():
     # Create API client
     client = BlogAPIClient("http://localhost:8000")
 
+    # Generate unique username and email using timestamp
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    username = f"testuser_{timestamp}"
+    email = f"test_{timestamp}@example.com"
+
     try:
         # Register a new user
         print("Registering new user...")
         user = client.register_user(
-            email="test@example.com",
-            username="testuser",
+            email=email,
+            username=username,
             password="testpassword123",
             full_name="Test User"
         )
@@ -98,7 +103,7 @@ def main():
 
         # Login
         print("\nLogging in...")
-        if client.login("testuser", "testpassword123"):
+        if client.login(username, "testpassword123"):
             print("Login successful!")
         else:
             print("Login failed!")

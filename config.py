@@ -2,10 +2,12 @@
 from pydantic import BaseSettings
 from functools import lru_cache
 from typing import Optional
+from dotenv import load_dotenv
+import os
 
 class Settings(BaseSettings):
     # Database settings
-    DATABASE_URL: str = "sqlite:///./mydb.db"
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/mydb.db")
     
     # JWT settings
     SECRET_KEY: str = "your-secret-key-here"

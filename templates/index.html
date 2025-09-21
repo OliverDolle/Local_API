@@ -131,6 +131,52 @@
         const API_URL = 'http://localhost:8000';
         let accessToken = '';
 
+        // Load posts on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPosts();
+            // Refresh posts every 5 seconds
+            setInterval(loadPosts, 5000);
+        });
+
+        // Function to load posts
+        async function loadPosts() {
+            try {
+                const response = await fetch(`${API_URL}/posts/`);
+                if (response.ok) {
+                    const posts = await response.json();
+                    displayPosts(posts);
+                }
+            } catch (error) {
+                console.error('Error loading posts:', error);
+            }
+        }
+
+        // Function to display posts
+        function displayPosts(posts) {
+            const postsListElement = document.getElementById('postsList');
+            if (!posts || posts.length === 0) {
+                postsListElement.innerHTML = '<p class="text-muted">No posts available.</p>';
+                return;
+            }
+            
+            postsListElement.innerHTML = posts.map(post => `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">${post.title}</h5>
+                        <p class="card-text">${post.content}</p>
+                        ${post.tags && post.tags.length > 0 ? `
+                            <div class="mb-2">
+                                ${post.tags.map(tag => 
+                                    `<span class="badge bg-secondary me-1">${tag.name}</span>`
+                                ).join('')}
+                            </div>
+                        ` : ''}
+                        <small class="text-muted">Posted by: ${post.author_id}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         // Login Form Handler
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();

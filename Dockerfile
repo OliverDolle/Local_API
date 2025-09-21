@@ -19,8 +19,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
+# Create a data directory and set permissions
+RUN mkdir -p /app/data && \
+    adduser --disabled-password --gecos '' appuser && \
+    chown -R appuser:appuser /app/data
+
 # Create a non-root user and switch to it
-RUN adduser --disabled-password --gecos '' appuser
 USER appuser
 
 # Expose the port the app runs on
